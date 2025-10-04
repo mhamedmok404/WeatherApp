@@ -6,6 +6,7 @@ from timezonefinder import TimezoneFinder
 from datetime import datetime
 import requests
 import pytz
+import geocoder
 
 root= Tk()
 root.title("Weather App")
@@ -13,9 +14,10 @@ root.geometry("900x500+300+200")
 root.resizable(False, False)
 
 
-def getWeather():
+def getWeather(city: str):
     try:
-     city=textfield.get()
+     #city=textfield.get()
+     print(city)
      geolocator =Nominatim(user_agent="weatherapp")
      location= geolocator.geocode(city)
      obj=TimezoneFinder()
@@ -32,14 +34,15 @@ def getWeather():
      api="https://api.openweathermap.org/data/2.5/weather?lat="+str(location.latitude)+"&lon="+str(location.longitude)+"&appid=7736f9660dbed83f556e3b179a64145a"
  
      data=requests.get(api).json()
+     print(data)
      condition= data["weather"][0]["main"]
      description= data["weather"][0]["description"]
-     temp=int(data["main"]["temp"])-273.15
+     temp=int(data["main"]["temp"]-273.15)
      pressure= data["main"]["pressure"]
      humidity= data["main"]["humidity"]
      wind= data["wind"]["speed"]
 
-     t.config(text=(temp, "c"))
+     t.config(text=(temp, "°"))
      c.config(text=(condition, "|", "Feels", "Like",temp,"c"))
      w.config(text=wind)
      w2.config(text=humidity)
@@ -47,6 +50,12 @@ def getWeather():
      w4.config(text=pressure)
     except Exception as e:
        messagebox.showerror("Weather App", "Invalid Entry!")
+def getlocation():
+   location=geocoder.ip("me")
+   textfield.insert(0, location.city)
+   return location.city
+
+
        
 
 #search box
@@ -59,9 +68,12 @@ textfield.place(x=50, y=40)
 textfield.focus()
 
 Search_icon= PhotoImage(file="search_icon.png")
-myimage_icon=Button(image= Search_icon, borderwidth=0, cursor="hand2", bg="#404040", command=getWeather)
-myimage_icon.place(x=400, y=34)
+myimage_icon=Button(image= Search_icon, borderwidth=0, cursor="hand2",bg="#404040" , command= lambda: getWeather(textfield.get()))
+myimage_icon.place(x=370, y=34)
 
+Location_icon=PhotoImage(file="location.png")
+Location= Button(image= Location_icon,border=0, bg="#404040" ,fg="white", cursor="hand2", command= lambda: getWeather(getlocation())) 
+Location.place(x=425, y=45)
 #Logo
 Logo_image=PhotoImage(file="logo.png")
 logo= Label(image=Logo_image)
