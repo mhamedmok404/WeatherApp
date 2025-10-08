@@ -30,8 +30,7 @@ def getWeather(city: str):
      name.config(text="Current Weather")
 
      #the weather
-     key="7736f9660dbed83f556e3b179a64145a"
-     api="https://api.openweathermap.org/data/2.5/weather?lat="+str(location.latitude)+"&lon="+str(location.longitude)+"&appid=7736f9660dbed83f556e3b179a64145a"
+     api="https://api.openweathermap.org/data/2.5/weather?lat="+str(location.latitude)+"&lon="+str(location.longitude)+"&appid={your key}"
  
      data=requests.get(api).json()
      print(data)
